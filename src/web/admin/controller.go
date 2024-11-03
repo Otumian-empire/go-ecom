@@ -1,0 +1,161 @@
+package admin
+
+import (
+	"database/sql"
+	"fmt"
+	"otumian-empire/go-ecom/src/handlers"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+)
+
+type Controller struct {
+	dao Dao
+}
+
+func NewController(db *sql.DB) Controller {
+	return Controller{
+		dao: NewDao(db),
+	}
+}
+
+func IsValidEmail(email string) bool {
+	return strings.Contains(email, "@") && strings.Contains(email, ".com")
+}
+
+func HasValidSize(str string, validSize int) bool {
+	return len(str) >= validSize
+}
+
+// admin roles
+const (
+	SUPER_ADMIN = "super_admin"
+	MODERATOR   = "mod"
+)
+
+func (controller *Controller) Login() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		// get the request body
+		var payload LoginDto
+
+		if err := context.BindJSON(&payload); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred while parsing body: %v", err.Error())))
+		}
+
+		// validate request body
+		if !IsValidEmail(payload.Email) {
+			context.JSON(handlers.FailureMessageResponse("Enter a valid email"))
+			return
+		}
+
+		if !HasValidSize(payload.Password, 5) {
+			context.JSON(handlers.FailureMessageResponse("Enter a password of at least 5 characters"))
+			return
+		}
+
+		// authenticate the credentials
+		row, err := controller.dao.FindOneByEmail(payload.Email)
+
+		if err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("Invalid credentials: %v", err.Error())))
+			return
+		}
+
+		// TODO: compare the password hashes
+		if row.Password != payload.Password {
+			context.JSON(handlers.FailureMessageResponse("Invalid credentials: password do not match"))
+			return
+		}
+
+		// TODO: if credential is authentic generate authorization token
+		// return user detail with password and add the auth token with message login successful
+		context.JSON(handlers.SuccessResponse("Login successful", row))
+
+	}
+}
+
+func (controller *Controller) CreatedAdmin() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		// the admins role must be check to make sure that the admin
+		// is a super admin before they can add a new another admin
+
+		// get the request body
+		var payload CreatedAdminDto
+
+		if err := context.BindJSON(&payload); err != nil {
+			context.JSON(handlers.FailureMessageResponse("Error occurred while parsing body"))
+			return
+		}
+
+		// validate the request body
+		if !IsValidEmail(payload.Email) {
+			context.JSON(handlers.FailureMessageResponse("Enter a valid email"))
+			return
+		}
+
+		if !HasValidSize(payload.FullName, 5) {
+			context.JSON(handlers.FailureMessageResponse("Enter a full name of at least 5 characters"))
+			return
+		}
+
+		// check that the role is one of super_admin|mod
+		if payload.Role != SUPER_ADMIN && payload.Role != MODERATOR {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("Role can be one of these: %v, %v", SUPER_ADMIN, MODERATOR)))
+			return
+		}
+
+		// authenticate the email to make sure that the email doesn't
+		// already exist
+		if _, err := controller.dao.FindOneByEmail(payload.Email); err == nil {
+			context.JSON(handlers.FailureMessageResponse("Email already taken"))
+			return
+		}
+
+		// create admin
+		if err := controller.dao.Create(payload); err != nil {
+			context.JSON(handlers.FailureMessageResponse(err.Error()))
+			return
+		}
+
+		// TODO: send admin email with default password to reset the password
+
+		context.JSON(handlers.SuccessMessageResponse("Admin created successfully"))
+	}
+}
+
+func (controller *Controller) UpdateProfile() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		context.JSON(handlers.SuccessMessageResponse("Pong"))
+		// context.JSON(200, gin.H{"ping": "pong"})
+	}
+}
+
+func (controller *Controller) UpdateAdminRole() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		context.JSON(200, gin.H{"ping": "pong"})
+	}
+}
+
+func (controller *Controller) ForgetPassword() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		context.JSON(200, gin.H{"ping": "pong"})
+	}
+}
+
+func (controller *Controller) ResetPassword() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		context.JSON(200, gin.H{"ping": "pong"})
+	}
+}
+
+func (controller *Controller) BlockUser() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		context.JSON(200, gin.H{"ping": "pong"})
+	}
+}
+
+func (controller *Controller) BlockAdmin() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		context.JSON(200, gin.H{"ping": "pong"})
+	}
+}
