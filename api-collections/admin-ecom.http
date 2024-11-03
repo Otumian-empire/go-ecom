@@ -1,0 +1,173 @@
+# Endpoints for the Ecom app
+
+@v1BaseUrl=http://localhost:3000/api/v1/admin
+
+
+## Admins
+
+### Create admin
+POST {{v1BaseUrl}}/create-admin
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email": "dannyo@gmail.com",
+    "password": "PlainPassword",
+    "fullName": "Daniel Omar",
+    "role": "mod"
+}
+
+
+### Login as admin
+POST {{v1BaseUrl}}/login
+Content-Type: application/json
+
+{
+    "email":"testemail@gmail.com",
+    "password": "PlainPassword"
+}
+
+
+
+### Update profile
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+
+### Update admin role
+PATCH  {{v1BaseUrl}}/2
+# PATCH /:adminId
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "role":""
+}
+
+### forget password
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### reset password
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### block admin
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### list admins
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### view admin
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### block user
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### list users
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### view user
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### add product
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### list products
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
+
+### view product
+POST {{v1BaseUrl}}/login
+Authorization: Bearer Token
+Content-Type: application/json
+
+{
+    "email":"",
+    "pasword": ""
+}
+
