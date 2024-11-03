@@ -1,0 +1,6 @@
+# Endpoints for the Ecom app
+
+@baseUrl=http://localhost:3000
+
+### Base test
+GET {{baseUrl}}
