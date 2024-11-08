@@ -9,9 +9,9 @@ import (
 func Router(router *gin.RouterGroup, db *sql.DB) *gin.RouterGroup {
 	controller := NewController(db)
 
+	router.POST("/", controller.CreatedAdmin())
 	router.POST("/login", controller.Login())
-	router.POST("/create-admin", controller.CreatedAdmin())
-	// router.POST("/", controller.UpdateProfile())
+	router.PATCH("/", controller.UpdateProfile())
 	// router.POST("/", controller.UpdateAdminRole())
 	// router.POST("/", controller.ForgetPassword())
 	// router.POST("/", controller.ResetPassword())

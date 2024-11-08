@@ -10,3 +10,7 @@ type CreatedAdminDto struct {
 	Email    string `json:"email"`
 	Role     string `json:"role"`
 }
+
+type UpdateProfileDto struct {
+	FullName string `json:"fullName"`
+}

@@ -14,7 +14,7 @@ func NewDao(db *sql.DB) Dao {
 	return Dao{db}
 }
 
-func (db Dao) FindOneById(id int64) (model.Admin, error) {
+func (db Dao) FindOneById(id int) (model.Admin, error) {
 	row := db.QueryRow("SELECT id, email, full_name, is_blocked, role, created_at, updated_at FROM admin WHERE id=$1", id)
 	if row.Err() != nil {
 		return model.Admin{}, fmt.Errorf("record not found")
@@ -75,7 +75,23 @@ func (db Dao) Create(payload CreatedAdminDto) error {
 	if count, err := row.RowsAffected(); err != nil {
 		return fmt.Errorf("an error occurred inserting , %v", err)
 	} else if count < 1 {
-		return fmt.Errorf("now new record was created")
+		return fmt.Errorf("no new record was created")
+	}
+
+	return nil
+}
+
+func (db Dao) Update(userId int, fullName string) error {
+	// TODO: generate a random password
+	row, err := db.Exec("UPDATE admin set \"full_name\"=$1 WHERE id=$2", fullName, userId)
+	if err != nil {
+		return fmt.Errorf("an error occurred updating , %v", err)
+	}
+
+	if count, err := row.RowsAffected(); err != nil {
+		return fmt.Errorf("an error occurred inserting , %v", err)
+	} else if count < 1 {
+		return fmt.Errorf("record was not updated")
 	}
 
 	return nil

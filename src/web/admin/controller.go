@@ -123,16 +123,75 @@ func (controller *Controller) CreatedAdmin() gin.HandlerFunc {
 	}
 }
 
+// here the admin can update their own full name
 func (controller *Controller) UpdateProfile() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		context.JSON(handlers.SuccessMessageResponse("Pong"))
-		// context.JSON(200, gin.H{"ping": "pong"})
+		// get the full name passed in the body
+		var payload UpdateProfileDto
+
+		if err := context.BindJSON(&payload); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("Error occurred parsing body, %v", err)))
+			return
+		}
+
+		// validate the full name
+		if !HasValidSize(payload.FullName, 5) {
+			context.JSON(handlers.FailureMessageResponse("Full name must be at least 5 characters long"))
+			return
+		}
+
+		// fetch the user by id (from the user object on request or session)
+		// TODO: Get the userId from the session/req
+		const userId = 1
+
+		if _, err := controller.dao.FindOneById(userId); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred reading user, %v", err)))
+			return
+		}
+
+		// update the admins full name
+		if err := controller.dao.Update(userId, payload.FullName); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred updating user full name, %v", err)))
+			return
+		}
+
+		context.JSON(handlers.SuccessMessageResponse("Full name updated successfully"))
 	}
 }
 
 func (controller *Controller) UpdateAdminRole() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		context.JSON(200, gin.H{"ping": "pong"})
+
+		// // get the full name passed in the body
+		// var payload UpdateProfileDto
+
+		// if err := context.BindJSON(&payload); err != nil {
+		// 	context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("Error occurred parsing body, %v", err)))
+		// 	return
+		// }
+
+		// // validate the full name
+		// if !HasValidSize(payload.FullName, 5) {
+		// 	context.JSON(handlers.FailureMessageResponse("Full name must be at least 5 characters long"))
+		// 	return
+		// }
+
+		// // fetch the user by id (from the user object on request or session)
+		// // TODO: Get the userId from the session/req
+		// const userId = 1
+
+		// if _, err := controller.dao.FindOneById(userId); err != nil {
+		// 	context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred reading user, %v", err)))
+		// 	return
+		// }
+
+		// // update the admins full name
+		// if err := controller.dao.Update(userId, payload.FullName); err != nil {
+		// 	context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred updating user full name, %v", err)))
+		// 	return
+		// }
+
+		context.JSON(handlers.SuccessMessageResponse("Full name updated successfully"))
 	}
 }
 

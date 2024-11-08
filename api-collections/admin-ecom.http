@@ -6,7 +6,7 @@
 ## Admins
 
 ### Create admin
-POST {{v1BaseUrl}}/create-admin
+POST {{v1BaseUrl}}/
 Authorization: Bearer Token
 Content-Type: application/json
 
@@ -30,13 +30,12 @@ Content-Type: application/json
 
 
 ### Update profile
-POST {{v1BaseUrl}}/login
+PATCH {{v1BaseUrl}}/
 Authorization: Bearer Token
 Content-Type: application/json
 
 {
-    "email":"",
-    "pasword": ""
+    "fullName":"Kwame Ansong"
 }
 
 
