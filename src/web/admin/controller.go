@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"otumian-empire/go-ecom/src/handlers"
+	"otumian-empire/go-ecom/src/utils"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -61,15 +62,15 @@ func (controller *Controller) Login() gin.HandlerFunc {
 			return
 		}
 
-		// TODO: compare the password hashes
-		if row.Password != payload.Password {
+		if isValidPassword, err := utils.ComparePassword(payload.Password, row.Password); err != nil || !isValidPassword {
+			fmt.Println(err)
 			context.JSON(handlers.FailureMessageResponse("Invalid credentials: password do not match"))
 			return
 		}
 
 		// TODO: if credential is authentic generate authorization token
 		// return user detail with password and add the auth token with message login successful
-		context.JSON(handlers.SuccessResponse("Login successful", row))
+		context.JSON(handlers.SuccessResponse("Login successful", LoginResponseMapper(row)))
 
 	}
 }
