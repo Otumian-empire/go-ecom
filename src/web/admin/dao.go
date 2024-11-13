@@ -3,6 +3,7 @@ package admin
 import (
 	"database/sql"
 	"fmt"
+	"otumian-empire/go-ecom/src/config"
 	"otumian-empire/go-ecom/src/model"
 )
 
@@ -14,7 +15,7 @@ func NewDao(db *sql.DB) Dao {
 	return Dao{db}
 }
 
-func (db Dao) FindOneById(id int) (model.Admin, error) {
+func (db Dao) FindOneById(id config.IdType) (model.Admin, error) {
 	row := db.QueryRow("SELECT id, email, full_name, is_blocked, role, created_at, updated_at FROM admin WHERE id=$1", id)
 	if row.Err() != nil {
 		return model.Admin{}, fmt.Errorf("record not found")
@@ -81,7 +82,7 @@ func (db Dao) Create(payload CreatedAdminDto) error {
 	return nil
 }
 
-func (db Dao) Update(userId int, fullName string) error {
+func (db Dao) Update(userId config.IdType, fullName string) error {
 	// TODO: generate a random password
 	row, err := db.Exec("UPDATE admin set \"full_name\"=$1 WHERE id=$2", fullName, userId)
 	if err != nil {
