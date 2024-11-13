@@ -70,7 +70,10 @@ func (controller *Controller) Login() gin.HandlerFunc {
 
 		// TODO: if credential is authentic generate authorization token
 		// return user detail with password and add the auth token with message login successful
-		context.JSON(handlers.SuccessResponse("Login successful", LoginResponseMapper(row)))
+
+		token := utils.GenerateJwt(row.Id)
+
+		context.JSON(handlers.SuccessResponse("Login successful", LoginResponseMapper(row, token)))
 
 	}
 }
