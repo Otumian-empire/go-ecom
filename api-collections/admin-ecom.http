@@ -1,19 +1,19 @@
 # Endpoints for the Ecom app
 
 @v1BaseUrl=http://localhost:3000/api/v1/admin
-
+@bearerToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNzIjoiZ29fZWNvbV9pc3N1ZXI6MDAwMDAwMDBlMjQzMWE2MjRjYWRlYWU2OWNiNDg1NTJhZGE0MTY1MGExNGFjOTFlZTczMTU5ZWFjMWM1YTNlOTMwZDA1MmU4IiwiZXhwIjoxNzMxNjE4ODEzLCJpYXQiOjE3MzE2MTUyMTN9.b4YD4S6oRoW-lZvwhIl5eOGtAe-qiHqoJV6VIJDBeCU
 
 ## Admins
 
 ### Create admin
 POST {{v1BaseUrl}}/
-Authorization: Bearer Token
+Authorization:Bearer {{bearerToken}}
 Content-Type: application/json
 
 {
-    "email": "dannyo@gmail.com",
+    "email": "alinko@gmail.com",
     "password": "PlainPassword",
-    "fullName": "Daniel Omar",
+    "fullName": "Sani Npamam Omar",
     "role": "mod"
 }
 
