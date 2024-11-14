@@ -85,6 +85,12 @@ func (controller *Controller) CreatedAdmin() gin.HandlerFunc {
 		// the admins role must be check to make sure that the admin
 		// is a super admin before they can add a new another admin
 
+		user, isUser := context.MustGet("user").(model.Admin)
+		if !isUser || user.Role != SUPER_ADMIN {
+			context.JSON(handlers.FailureMessageResponse("Not authorized"))
+			return
+		}
+
 		// get the request body
 		var payload CreatedAdminDto
 
