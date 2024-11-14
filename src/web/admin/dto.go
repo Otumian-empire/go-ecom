@@ -24,9 +24,10 @@ type LoginResponse struct {
 	Role      string `db:"role" json:"role"`
 	CreatedAt string `db:"created_at" json:"createdAt"`
 	UpdatedAt string `db:"updated_at" json:"updatedAt"`
+	Token     string `json:"token"`
 }
 
-func LoginResponseMapper(record model.Admin) LoginResponse {
+func LoginResponseMapper(record model.Admin, token string) LoginResponse {
 	return LoginResponse{
 		Id:        record.Id,
 		FullName:  record.FullName,
@@ -34,5 +35,6 @@ func LoginResponseMapper(record model.Admin) LoginResponse {
 		Role:      record.Role,
 		CreatedAt: record.CreatedAt,
 		UpdatedAt: record.UpdatedAt,
+		Token:     token,
 	}
 }
