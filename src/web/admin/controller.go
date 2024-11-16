@@ -160,6 +160,19 @@ func (controller *Controller) UpdateProfile() gin.HandlerFunc {
 	}
 }
 
+func (controller *Controller) ReadProfile() gin.HandlerFunc {
+	return func(context *gin.Context) {
+
+		user, isUser := context.MustGet("user").(model.Admin)
+		if !isUser {
+			context.JSON(handlers.FailureMessageResponse("Not authorized"))
+			return
+		}
+
+		context.JSON(handlers.SuccessResponse("Data fetched successfully", user))
+	}
+}
+
 func (controller *Controller) UpdateAdminRole() gin.HandlerFunc {
 	return func(context *gin.Context) {
 
