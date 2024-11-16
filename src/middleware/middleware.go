@@ -21,7 +21,7 @@ func AuthorizeJWT[T interface{}](repo Repository[T]) gin.HandlerFunc {
 		authToken := context.GetHeader("authorization")
 		if !utils.ValidateApiKey(authToken) {
 			context.Abort()
-			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization 1"))
+			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization"))
 			return
 		}
 
@@ -30,13 +30,13 @@ func AuthorizeJWT[T interface{}](repo Repository[T]) gin.HandlerFunc {
 
 		if err != nil {
 			context.Abort()
-			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization 2" + " " + err.Error()))
+			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization" + " " + err.Error()))
 			return
 		}
 
 		if !token.Valid {
 			context.Abort()
-			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization 3"))
+			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization"))
 			return
 		}
 
@@ -45,14 +45,14 @@ func AuthorizeJWT[T interface{}](repo Repository[T]) gin.HandlerFunc {
 		// Check if the token has expired
 		if utils.IsExpiredToken(claims) {
 			context.Abort()
-			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization 4"))
+			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization"))
 			return
 		}
 
 		// Check the issuer
 		if !utils.IsValidIssuer(claims, env.JwtIssuer) {
 			context.Abort()
-			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization 4"))
+			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization"))
 			return
 		}
 
@@ -68,7 +68,7 @@ func AuthorizeJWT[T interface{}](repo Repository[T]) gin.HandlerFunc {
 
 		if err != nil {
 			context.Abort()
-			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization 6"))
+			context.JSON(handlers.AuthenticationErrorResponse("Invalid authorization"))
 			return
 		}
 
