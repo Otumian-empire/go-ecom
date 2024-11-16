@@ -19,6 +19,14 @@ func NewController(db *sql.DB) Controller {
 		dao: NewDao(db),
 	}
 }
+
+func (controller *Controller) Login() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		// get the request body
+		var payload LoginDto
+
+		if err := context.BindJSON(&payload); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred while parsing body: %v", err.Error())))
 		}
 
 		// validate request body
@@ -129,6 +137,11 @@ func (controller *Controller) UpdateProfile() gin.HandlerFunc {
 			return
 		}
 
+		user, isUser := context.MustGet("user").(model.Admin)
+		if !isUser || user.Role != SUPER_ADMIN {
+			context.JSON(handlers.FailureMessageResponse("Not authorized"))
+			return
+		}
 		// fetch the user by id (from the user object on request or session)
 		userId := user.Id
 
