@@ -6,7 +6,6 @@ import (
 	"otumian-empire/go-ecom/src/handlers"
 	"otumian-empire/go-ecom/src/model"
 	"otumian-empire/go-ecom/src/utils"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,37 +19,15 @@ func NewController(db *sql.DB) Controller {
 		dao: NewDao(db),
 	}
 }
-
-func IsValidEmail(email string) bool {
-	return strings.Contains(email, "@") && strings.Contains(email, ".com")
-}
-
-func HasValidSize(str string, validSize int) bool {
-	return len(str) >= validSize
-}
-
-// admin roles
-const (
-	SUPER_ADMIN = "super_admin"
-	MODERATOR   = "mod"
-)
-
-func (controller *Controller) Login() gin.HandlerFunc {
-	return func(context *gin.Context) {
-		// get the request body
-		var payload LoginDto
-
-		if err := context.BindJSON(&payload); err != nil {
-			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred while parsing body: %v", err.Error())))
 		}
 
 		// validate request body
-		if !IsValidEmail(payload.Email) {
+		if !utils.IsValidEmail(payload.Email) {
 			context.JSON(handlers.FailureMessageResponse("Enter a valid email"))
 			return
 		}
 
-		if !HasValidSize(payload.Password, 5) {
+		if !utils.HasValidSize(payload.Password, 5) {
 			context.JSON(handlers.FailureMessageResponse("Enter a password of at least 5 characters"))
 			return
 		}
@@ -100,12 +77,12 @@ func (controller *Controller) CreatedAdmin() gin.HandlerFunc {
 		}
 
 		// validate the request body
-		if !IsValidEmail(payload.Email) {
+		if !utils.IsValidEmail(payload.Email) {
 			context.JSON(handlers.FailureMessageResponse("Enter a valid email"))
 			return
 		}
 
-		if !HasValidSize(payload.FullName, 5) {
+		if !utils.HasValidSize(payload.FullName, 5) {
 			context.JSON(handlers.FailureMessageResponse("Enter a full name of at least 5 characters"))
 			return
 		}
@@ -147,14 +124,13 @@ func (controller *Controller) UpdateProfile() gin.HandlerFunc {
 		}
 
 		// validate the full name
-		if !HasValidSize(payload.FullName, 5) {
+		if !utils.HasValidSize(payload.FullName, 5) {
 			context.JSON(handlers.FailureMessageResponse("Full name must be at least 5 characters long"))
 			return
 		}
 
 		// fetch the user by id (from the user object on request or session)
-		// TODO: Get the userId from the session/req
-		const userId = 1
+		userId := user.Id
 
 		if _, err := controller.dao.FindOneById(userId); err != nil {
 			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred reading user, %v", err)))
