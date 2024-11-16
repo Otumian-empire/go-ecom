@@ -82,9 +82,10 @@ func (db Dao) Create(payload CreatedAdminDto) error {
 	return nil
 }
 
-func (db Dao) Update(userId config.IdType, fullName string) error {
+func (db Dao) Update(userId config.IdType, field, value string) error {
 	// TODO: generate a random password
-	row, err := db.Exec("UPDATE admin set \"full_name\"=$1 WHERE id=$2", fullName, userId)
+	sql := fmt.Sprintf("UPDATE admin set %v=$1 WHERE id=$2", field)
+	row, err := db.Exec(sql, value, userId)
 	if err != nil {
 		return fmt.Errorf("an error occurred updating , %v", err)
 	}
