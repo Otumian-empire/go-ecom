@@ -83,18 +83,35 @@ func (db Dao) Create(payload CreatedAdminDto) error {
 }
 
 func (db Dao) Update(userId config.IdType, field, value string) error {
-	// TODO: generate a random password
 	sql := fmt.Sprintf("UPDATE admin set %v=$1 WHERE id=$2", field)
 	row, err := db.Exec(sql, value, userId)
 	if err != nil {
-		return fmt.Errorf("an error occurred updating , %v", err)
+		fmt.Println("err-Update")
+		fmt.Println(err)
+		return fmt.Errorf("an error occurred updating %v, %v", field, err)
 	}
 
 	if count, err := row.RowsAffected(); err != nil {
-		return fmt.Errorf("an error occurred inserting , %v", err)
+		return fmt.Errorf("an error occurred updating , %v", err)
 	} else if count < 1 {
 		return fmt.Errorf("record was not updated")
 	}
 
 	return nil
 }
+
+// func (db Dao) Update(userId config.IdType, fullName string) error {
+// 	// TODO: generate a random password
+// 	row, err := db.Exec("UPDATE admin set \"full_name\"=$1 WHERE id=$2", fullName, userId)
+// 	if err != nil {
+// 		return fmt.Errorf("an error occurred updating , %v", err)
+// 	}
+
+// 	if count, err := row.RowsAffected(); err != nil {
+// 		return fmt.Errorf("an error occurred inserting , %v", err)
+// 	} else if count < 1 {
+// 		return fmt.Errorf("record was not updated")
+// 	}
+
+// 	return nil
+// }

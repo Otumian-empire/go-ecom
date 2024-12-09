@@ -1,12 +1,12 @@
 # Endpoints for the Ecom app
 
 @v1BaseUrl=http://localhost:3000/api/v1/admin
-@bearerToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNzIjoiZ29fZWNvbV9pc3N1ZXI6MDAwMDAwMDBlMjQzMWE2MjRjYWRlYWU2OWNiNDg1NTJhZGE0MTY1MGExNGFjOTFlZTczMTU5ZWFjMWM1YTNlOTMwZDA1MmU4IiwiZXhwIjoxNzMxNjE4ODEzLCJpYXQiOjE3MzE2MTUyMTN9.b4YD4S6oRoW-lZvwhIl5eOGtAe-qiHqoJV6VIJDBeCU
+@bearerToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNzIjoiZ29fZWNvbV9pc3N1ZXI6MDAwMDAwMDBlMjQzMWE2MjRjYWRlYWU2OWNiNDg1NTJhZGE0MTY1MGExNGFjOTFlZTczMTU5ZWFjMWM1YTNlOTMwZDA1MmU4IiwiZXhwIjoxNzMxNzY4OTc1LCJpYXQiOjE3MzE3NjUzNzV9.WEbto8SQ4P-AR0ovDY1NXbNaT1qYx16RNgzdutsuRbU
 
 ## Admins
 
 ### Create admin
-POST {{v1BaseUrl}}/
+POST {{v1BaseUrl}}
 Authorization:Bearer {{bearerToken}}
 Content-Type: application/json
 
@@ -28,16 +28,19 @@ Content-Type: application/json
 }
 
 
-
 ### Update profile
-PATCH {{v1BaseUrl}}/
-Authorization: Bearer Token
+PATCH {{v1BaseUrl}}
+Authorization: Bearer {{bearerToken}}
 Content-Type: application/json
 
 {
-    "fullName":"Kwame Ansong"
+    "fullName":"Kwame Dunnae"
 }
 
+
+### Read profile
+GET {{v1BaseUrl}}
+Authorization: Bearer {{bearerToken}}
 
 
 ### Update admin role
@@ -47,7 +50,7 @@ Authorization: Bearer Token
 Content-Type: application/json
 
 {
-    "role":""
+    "role":"mod"
 }
 
 ### forget password

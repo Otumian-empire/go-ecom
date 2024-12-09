@@ -151,7 +151,7 @@ func (controller *Controller) UpdateProfile() gin.HandlerFunc {
 		}
 
 		// update the admins full name
-		if err := controller.dao.Update(userId, payload.FullName); err != nil {
+		if err := controller.dao.Update(userId, FULL_NAME, payload.FullName); err != nil {
 			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred updating user full name, %v", err)))
 			return
 		}
@@ -173,37 +173,45 @@ func (controller *Controller) ReadProfile() gin.HandlerFunc {
 	}
 }
 
-func (controller *Controller) UpdateAdminRole() gin.HandlerFunc {
+func (controller *Controller) UpdateRole() gin.HandlerFunc {
 	return func(context *gin.Context) {
 
-		// // get the full name passed in the body
-		// var payload UpdateProfileDto
+		user, isUser := context.MustGet("user").(model.Admin)
+		if !isUser || user.Role != SUPER_ADMIN {
+			context.JSON(handlers.FailureMessageResponse("Not authorized"))
+			return
+		}
 
-		// if err := context.BindJSON(&payload); err != nil {
-		// 	context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("Error occurred parsing body, %v", err)))
-		// 	return
-		// }
+		var rolePayload UpdateAdminRoleDto
 
-		// // validate the full name
-		// if !HasValidSize(payload.FullName, 5) {
-		// 	context.JSON(handlers.FailureMessageResponse("Full name must be at least 5 characters long"))
-		// 	return
-		// }
+		if err := context.BindJSON(&rolePayload); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("Error occurred parsing body, %v", err)))
+			return
+		}
 
-		// // fetch the user by id (from the user object on request or session)
-		// // TODO: Get the userId from the session/req
-		// const userId = 1
+		if !rolePayload.IsValid() {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("Role can be either %v or %v", SUPER_ADMIN, MODERATOR)))
+			return
+		}
 
-		// if _, err := controller.dao.FindOneById(userId); err != nil {
-		// 	context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred reading user, %v", err)))
-		// 	return
-		// }
+		var idPayload IdDto
 
-		// // update the admins full name
-		// if err := controller.dao.Update(userId, payload.FullName); err != nil {
-		// 	context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred updating user full name, %v", err)))
-		// 	return
-		// }
+		if err := context.ShouldBindUri(&idPayload); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("Error occurred parsing Uri, %v", err)))
+			return
+		}
+
+		adminId := idPayload.Id
+
+		if _, err := controller.dao.FindOneById(adminId); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred reading user, %v", err)))
+			return
+		}
+
+		if err := controller.dao.Update(adminId, ROLE, rolePayload.Role); err != nil {
+			context.JSON(handlers.FailureMessageResponse(fmt.Sprintf("An error occurred updating user role, %v", err)))
+			return
+		}
 
 		context.JSON(handlers.SuccessMessageResponse("Full name updated successfully"))
 	}

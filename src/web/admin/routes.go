@@ -18,6 +18,7 @@ func Router(router *gin.RouterGroup, db *sql.DB) *gin.RouterGroup {
 
 	router.POST("/", controller.CreatedAdmin())
 	router.PATCH("/", controller.UpdateProfile())
+	router.PATCH("/:id", controller.UpdateRole())
 	router.GET("/", controller.ReadProfile())
 	// router.POST("/", controller.UpdateAdminRole())
 	// router.POST("/", controller.ForgetPassword())
